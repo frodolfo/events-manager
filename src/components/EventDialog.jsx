@@ -6,9 +6,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
-// import EventsAPI from '../api/EventsAPI';
-// import EventsDB from '../db/EventsDB';
 import FilterSelect from './shared/FilterSelect';
 import MultipleSelect from './shared/MultiSelect';
 
@@ -50,12 +50,21 @@ export const EventDialog = ({
   };
 
   const submitForm = () => {
-    addEvent({
-      description,
+    const newEvent = {
+      id: uuidv4(),
+      description: description,
       domain_id: domain,
       subdomain_id: subdomain,
-      eventOwners,
-    });
+      owners: [...eventOwners],
+      status: 1,
+      createdAt: moment(),
+      updatedAt: moment(),
+    };
+
+    // TODO: delete this
+    console.log(`newEvent: ${JSON.stringify(newEvent)}`);
+
+    addEvent(newEvent);
     handleClose();
   };
 

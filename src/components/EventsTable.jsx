@@ -49,6 +49,7 @@ export const EventsTable = () => {
   const allOwners = useEventsStore((state) => state.owners);
   const allStatuses = useEventsStore((state) => state.statuses);
   const updateEventStatus = useEventsStore((state) => state.updateEventStatus);
+  // const getDomainById = useEventsStore((state) => state.getDomainById);
 
   const [domains, setDomains] = useState([]);
   const [subdomains, setSubdomains] = useState([]);
@@ -76,8 +77,17 @@ export const EventsTable = () => {
 
       let currentDomains = new Set();
       eventsWithDomains.forEach((event) => {
+        // TODO: delete this
+        // console.log(`event.domain_id: ${event.domain_id}`);
+        // console.log(
+        //   `getDomainById(event.domain_id): ${getDomainById(event.domain_id)}`
+        // );
+        // console.log(
+        //   `getDomainById(event.domain_id): ${getDomainById(event.domain_id)}`
+        // );
         currentDomains.add(
           EventsAPI.getDomainById(allDomains, event.domain_id)
+          // getDomainById(event.domain_id)
         );
       });
 
@@ -225,9 +235,6 @@ export const EventsTable = () => {
 
   const handleCompleteClick = (e) => {
     let eventId = e?.target?.dataset?.id;
-    // TODO: delete this
-    console.log(`eventId: ${eventId}`);
-
     updateEventStatus(eventId, 2);
   };
 

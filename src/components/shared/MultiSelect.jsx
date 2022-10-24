@@ -31,14 +31,22 @@ export default function MultipleSelect({ label, values, selectChangeHandler }) {
   const [ownerIds, setOwnerIds] = useState([]);
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+    const value = event?.target.value;
+    // TODO: delete this
+    console.log(`value: ${value}`);
+    console.log(`typeof value === 'string': ${typeof value === 'string'}`);
+    console.log(`typeof value: ${typeof value}`);
+    console.log(`Array.isArray(value): ${Array.isArray(value)}`);
+
     setOwnerIds(
       // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
+      [...(typeof value === 'string' ? value.split(',') : value)]
     );
-    selectChangeHandler([typeof value === 'string' ? value.split(',') : value]);
+
+    // console.log(`valueArray: ${value.split(',')}`);
+    selectChangeHandler([
+      ...(typeof value === 'string' ? value.split(',') : value),
+    ]);
   };
 
   return (

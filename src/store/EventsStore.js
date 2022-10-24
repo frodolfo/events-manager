@@ -9,26 +9,32 @@ const useEventsStore = create((set, get) => ({
   statuses: EventsDB.statuses,
 
   addEvent: (newEvent) =>
-    set((state) => ({ events: state.events.push(newEvent) })),
+    set((state) => {
+      let events = state.events;
+      // TODO: deleete this
+      console.log(`newEvent: ${JSON.stringify(newEvent)}`);
+      console.log(`BEFORE PUSH events: ${JSON.stringify(events)}`);
+      events.push(newEvent);
+      console.log(`AFTER PUSH events: ${JSON.stringify(events)}`);
+      return { events: [...events] };
+    }),
 
   deleteEvent: (eventId) =>
     set((state) => {
       let events = state.events;
-      const eventIndex = events.findByIndex((event) => event.id === eventId);
-      return { events: state.events.splice(eventIndex, 1) };
+      const eventIndex = events.findIndex((event) => event.id === eventId);
+      events.splice(eventIndex, 1);
+      return { events: [...events] };
     }),
 
   updateEventStatus: (eventId, newStatus) =>
     set((state) => {
-      // TODO: delete this
-      console.log(`newStatus: ${newStatus}`);
       let events = state.events;
-      console.log(
-        `BEFORE state.events[eventId].status: ${state.events[eventId].status}`
+      let eventIndex = events.findIndex(
+        (event) => event.status === parseInt(eventId)
       );
-      events[eventId].status = newStatus;
-      console.log(`AFTER events[eventId].status: ${events[eventId].status}`);
-      return { events: events };
+      events[eventIndex].status = newStatus;
+      return { events: [...events] };
     }),
 }));
 
