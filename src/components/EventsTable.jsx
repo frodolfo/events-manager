@@ -68,7 +68,7 @@ export const EventsTable = () => {
       allEvents.sort((ev1, ev2) => {
         return (
           ev1.status - ev2.status ||
-          new Date(ev2.createdAt) - new Date(ev1.createdAt)
+          new Date(ev2.updatedAt) - new Date(ev1.updatedAt)
         );
       });
 
@@ -275,9 +275,9 @@ export const EventsTable = () => {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <StyledTableCell component="td" scope="row" align="center">
-                  {moment(event.createdAt).format('MM/DD/YYYY')}
+                  {moment(event.updatedAt).format('MM/DD/YYYY')}
                   <br />
-                  {moment(event.createdAt).format('h:mm A')}
+                  {moment(event.updatedAt).format('h:mm A')}
                 </StyledTableCell>
                 <StyledTableCell align="left" style={{ maxWidth: '80px' }}>
                   {event.description}
@@ -326,9 +326,6 @@ export const EventsTable = () => {
       </TableContainer>
       <EventDialog
         dialogOpen={open}
-        filteredSubdomains={filteredSubdomains}
-        changeDomain={changeDomain}
-        changeSubdomain={changeSubdomain}
         handleClose={handleClose}
         eventsStore={useEventsStore}
       />
