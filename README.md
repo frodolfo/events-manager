@@ -1,70 +1,40 @@
-# Getting Started with Create React App
+# Events Manager
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a client-only application that uses a JSON file (`EventsDB.js`) as the data source.  The list of events, domains, subdomains, owners and statuses are defined in this file.   There are no dependencies on any external API or backend component.  The listing of events are sorted by status followed by the recency of the events.  You can filter the listing by domain name, subdomain name, owner or status by clicking on the corresponding header name and selecting an option from the dropdown.  Events with the `Ongoing` status are giving the highest priority on the list.  You can create new events by clicking on the `New Event` button located in the top left corner of the main interface.  
 
-## Available Scripts
+## Prerequisits
 
-In the project directory, you can run:
+- [NodeJS](https://nodejs.org/en/) (version 14 and up)
+- Web browser (Chrome, Firefox, Safari, Edge)
+- Terminal, bash-shell or powershell
+- Basic knowledge of command-line interfaces/shells
+## installation
 
-### `npm start`
+To install this web application, simply follow these steps:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Unzip the file `events-manager.zip` to your local hard drive
+2. Open a terminal/shell/cli window
+3. Change directory (cd) to `events-manager` 
+4. Run `npm i` to begin installing required NodeJS packages.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Launch the Application
 
-### `npm test`
+To run the application in a web browser, simply open a terminal/shell/cli and follow these steps:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* If you're continuing from the installation steps, type `npm run start`.  Otherwise, execute the commands below.
 
-### `npm run build`
+- Open a terminal/shell/cli window
+- Change directory to the location where the application was unzipped
+- Run `npm start` to launch the Events Manager Application
+- Open the URL `http://localhost:3000` in a web browser
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Questions?
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Contact Fred at [fred.rodolfo@gmail.com](mailto:fred.rodolfo@gmail.com)
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Project Repository
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+[Events Manager](https://github.com/frodolfo/events-manager)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
