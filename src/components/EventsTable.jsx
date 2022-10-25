@@ -10,6 +10,7 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import moment from 'moment';
 
 import { EventDialog } from './EventDialog';
 import FilterSelect from './shared/FilterSelect';
@@ -49,14 +50,10 @@ export const EventsTable = () => {
   const allOwners = useEventsStore((state) => state.owners);
   const allStatuses = useEventsStore((state) => state.statuses);
   const updateEventStatus = useEventsStore((state) => state.updateEventStatus);
-  // const getDomainById = useEventsStore((state) => state.getDomainById);
 
   const [domains, setDomains] = useState([]);
   const [subdomains, setSubdomains] = useState([]);
   const [selectedDomainId, setSelectedDomainId] = useState(0);
-  const [selectedSubdomainId, setSelectedSubdomainId] = useState(0);
-  const [selectedOwnerId, setSelectedOwnerId] = useState(0);
-  const [selectedStatus, setSelectedStatus] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [filteredSubdomains, setFilteredSubdomains] = useState([]);
   const [filteredOwners, setFilteredOwners] = useState([]);
@@ -65,11 +62,16 @@ export const EventsTable = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // const getDomainById = useEventsStore((state) => state.getDomainById);
-  // const getSubdomainById = useEventsStore((state) => state.getSubdomainById);
-
   useEffect(() => {
     if (allEvents.length > 0) {
+      // Let's sort the events by status (ongoing first)
+      allEvents.sort((ev1, ev2) => {
+        return (
+          ev1.status - ev2.status ||
+          new Date(ev2.createdAt) - new Date(ev1.createdAt)
+        );
+      });
+
       // Get all available domains
       let eventsWithDomains = allEvents.filter(
         (event) => event.domain_id !== null && event.domain_id !== undefined
@@ -77,17 +79,8 @@ export const EventsTable = () => {
 
       let currentDomains = new Set();
       eventsWithDomains.forEach((event) => {
-        // TODO: delete this
-        // console.log(`event.domain_id: ${event.domain_id}`);
-        // console.log(
-        //   `getDomainById(event.domain_id): ${getDomainById(event.domain_id)}`
-        // );
-        // console.log(
-        //   `getDomainById(event.domain_id): ${getDomainById(event.domain_id)}`
-        // );
         currentDomains.add(
           EventsAPI.getDomainById(allDomains, event.domain_id)
-          // getDomainById(event.domain_id)
         );
       });
 
@@ -113,7 +106,6 @@ export const EventsTable = () => {
         currentStatuses.add(EventsAPI.getStatusById(allStatuses, event.status));
       });
 
-      // setFilteredEvents([...EventsDB.events]);
       setFilteredEvents([...allEvents]);
       setFilteredSubdomains([...currentSubdomains]);
       setFilteredOwners([...currentOwners]);
@@ -122,33 +114,20 @@ export const EventsTable = () => {
   }, [allEvents, allDomains, allSubdomains, allOwners, allStatuses]);
 
   const changeDomain = (domainId) => {
-    // let newDomains = domains.filter((domain) => domain.id === domainId);
-    // setDomains([...newDomains]);
-    // TODO: delete this
-    console.log(`domainId: ${domainId}`);
     setSelectedDomainId(domainId);
     filterEvents('domain', domainId);
     filterSubdomains(domainId);
   };
 
   const changeSubdomain = (subdomainId) => {
-    // TODO: delete this
-    console.log(`subdomainId: ${subdomainId}`);
-    setSelectedSubdomainId(subdomainId);
     filterEvents('subdomain', subdomainId);
   };
 
   const changeOwner = (ownerId) => {
-    // TODO: delete this
-    console.log(`ownerId: ${ownerId}`);
-    setSelectedOwnerId(ownerId);
     filterEvents('owner', ownerId);
   };
 
   const changeStatus = (status) => {
-    // TODO: delete this
-    console.log(`status: ${status}`);
-    setSelectedStatus(status);
     filterEvents('status', status);
   };
 
@@ -159,9 +138,6 @@ export const EventsTable = () => {
 
     switch (filterType.toUpperCase()) {
       case 'DOMAIN':
-        // TODO: delete This
-        console.log(`domain id: ${id}`);
-
         if (id === 0) {
           newEvents = [...allEvents];
         } else {
@@ -171,9 +147,6 @@ export const EventsTable = () => {
         break;
 
       case 'SUBDOMAIN':
-        // TODO: delete This
-        console.log(`subdomain id: ${id}`);
-
         if (id === 0) {
           if (selectedDomainId === 0) {
             newEvents = [...allEvents];
@@ -191,9 +164,6 @@ export const EventsTable = () => {
         break;
 
       case 'OWNER':
-        // TODO: delete This
-        console.log(`owner id: ${id}`);
-
         if (id === 0) {
           newEvents = [...allEvents];
         } else {
@@ -203,9 +173,6 @@ export const EventsTable = () => {
         break;
 
       case 'STATUS':
-        // TODO: delete This
-        console.log(`status id: ${id}`);
-
         if (id === 0) {
           newEvents = [...allEvents];
         } else {
@@ -224,11 +191,17 @@ export const EventsTable = () => {
     let newSubdomains;
 
     if (domainId === 0) {
-      newSubdomains = [...domains];
+      newSubdomains = [...subdomains];
     } else {
       newSubdomains = filteredSubdomains.filter(
         (subdomain) => subdomain.domain_id === domainId
       );
+
+      if (newSubdomains.length === 0) {
+        newSubdomains = subdomains.filter(
+          (subdomain) => subdomain.domain_id === domainId
+        );
+      }
     }
     setFilteredSubdomains([...newSubdomains]);
   };
@@ -254,13 +227,13 @@ export const EventsTable = () => {
         <Table sx={{ minWidth: 650 }} size="small" aria-label="events table">
           <TableHead>
             <TableRow>
-              <StyledTableCell style={{ maxWidth: '80px' }}>
+              <StyledTableCell align="center" style={{ maxWidth: '80px' }}>
                 Report Date
               </StyledTableCell>
               <StyledTableCell
                 component="th"
                 align="left"
-                style={{ maxWidth: '240px' }}
+                style={{ minWidth: '240px' }}
               >
                 Description
               </StyledTableCell>
@@ -278,14 +251,14 @@ export const EventsTable = () => {
                   selectChangeHandler={changeSubdomain}
                 />
               </StyledTableCell>
-              <StyledTableCell align="left" style={{ maxWidth: '60px' }}>
+              <StyledTableCell align="left" style={{ minWidth: '200px' }}>
                 <FilterSelect
                   selectLabel={'Owners'}
                   values={filteredOwners}
                   selectChangeHandler={changeOwner}
                 />
               </StyledTableCell>
-              <StyledTableCell align="center">
+              <StyledTableCell align="center" style={{ maxWidth: '60px' }}>
                 <FilterSelect
                   selectLabel={'Status'}
                   values={filteredStatuses}
@@ -302,7 +275,9 @@ export const EventsTable = () => {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <StyledTableCell component="td" scope="row" align="center">
-                  {event.createdAt}
+                  {moment(event.createdAt).format('MM/DD/YYYY')}
+                  <br />
+                  {moment(event.createdAt).format('h:mm A')}
                 </StyledTableCell>
                 <StyledTableCell align="left" style={{ maxWidth: '80px' }}>
                   {event.description}

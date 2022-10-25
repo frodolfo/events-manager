@@ -1,4 +1,5 @@
 import create from 'zustand';
+import moment from 'moment';
 import EventsDB from '../db/EventsDB';
 
 const useEventsStore = create((set, get) => ({
@@ -11,11 +12,7 @@ const useEventsStore = create((set, get) => ({
   addEvent: (newEvent) =>
     set((state) => {
       let events = state.events;
-      // TODO: deleete this
-      console.log(`newEvent: ${JSON.stringify(newEvent)}`);
-      console.log(`BEFORE PUSH events: ${JSON.stringify(events)}`);
       events.push(newEvent);
-      console.log(`AFTER PUSH events: ${JSON.stringify(events)}`);
       return { events: [...events] };
     }),
 
@@ -30,10 +27,11 @@ const useEventsStore = create((set, get) => ({
   updateEventStatus: (eventId, newStatus) =>
     set((state) => {
       let events = state.events;
-      let eventIndex = events.findIndex(
-        (event) => event.status === parseInt(eventId)
-      );
+      let eventIndex = events.findIndex((event) => event.id === eventId);
+
       events[eventIndex].status = newStatus;
+      events[eventIndex].updatedAt = moment();
+
       return { events: [...events] };
     }),
 }));

@@ -12,32 +12,103 @@ import moment from 'moment';
 import FilterSelect from './shared/FilterSelect';
 import MultipleSelect from './shared/MultiSelect';
 
-export const EventDialog = ({
-  dialogOpen,
-  filteredSubdomains,
-  changeDomain,
-  changeSubdomain,
-  handleClose,
-  eventsStore,
-}) => {
-  const [domain, setDomain] = useState(0);
-  const [subdomain, setSubdomain] = useState(0);
-  const [eventOwners, setEventOwners] = useState([]);
-  const [description, setDescription] = useState('');
-
+export const EventDialog = ({ dialogOpen, handleClose, eventsStore }) => {
+  const events = eventsStore((state) => state.events);
   const domains = eventsStore((state) => state.domains);
-  //   const subdomains = eventsStore((state) => state.subdomains);
+  const subdomains = eventsStore((state) => state.subdomains);
   const owners = eventsStore((state) => state.owners);
   const addEvent = eventsStore((state) => state.addEvent);
 
+  const [domain, setDomain] = useState(0);
+  const [subdomain, setSubdomain] = useState(0);
+  const [filteredSubdomains, setFilteredSubdomains] = useState([]);
+  const [eventOwners, setEventOwners] = useState([]);
+  const [description, setDescription] = useState('');
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [selectedDomainId, setSelectedDomainId] = useState(null);
+
+  const filterEvents = (filterType, id) => {
+    let newEvents;
+
+    if (!filterType) return;
+
+    switch (filterType.toUpperCase()) {
+      case 'DOMAIN':
+        if (id === 0) {
+          newEvents = [...events];
+        } else {
+          newEvents = events.filter((event) => event.domain_id === id);
+        }
+        setFilteredEvents([...newEvents]);
+        break;
+
+      case 'SUBDOMAIN':
+        if (id === 0) {
+          if (selectedDomainId === 0) {
+            newEvents = [...events];
+          } else {
+            newEvents = events.filter(
+              (event) => event.domain_id === selectedDomainId
+            );
+          }
+        } else {
+          newEvents = filteredEvents.filter(
+            (event) => event.subdomain_id === id
+          );
+        }
+        setFilteredEvents([...newEvents]);
+        break;
+
+      case 'OWNER':
+        if (id === 0) {
+          newEvents = [...events];
+        } else {
+          newEvents = events.filter((event) => event.owners.includes(id));
+        }
+        setFilteredEvents([...newEvents]);
+        break;
+
+      case 'STATUS':
+        if (id === 0) {
+          newEvents = [...events];
+        } else {
+          newEvents = events.filter((event) => event.status === id);
+        }
+        setFilteredEvents([...newEvents]);
+        break;
+
+      default:
+    }
+
+    setFilteredEvents([...newEvents]);
+  };
+
+  const filterSubdomains = (domainId) => {
+    let newSubdomains;
+
+    if (domainId === 0) {
+      newSubdomains = [...subdomains];
+    } else {
+      newSubdomains = subdomains.filter(
+        (subdomain) => subdomain.domain_id === domainId
+      );
+    }
+    setFilteredSubdomains([...newSubdomains]);
+  };
+
   const onDomainChange = (domainId) => {
     setDomain(domainId);
-    changeDomain(domainId);
+    setSelectedDomainId(domainId);
+    console.log(`domainId: ${domainId}`);
+    filterEvents('domain', domainId);
+    filterSubdomains(domainId);
   };
 
   const onSubdomainChange = (subdomainId) => {
     setSubdomain(subdomainId);
-    changeSubdomain(subdomainId);
+    console.log(`subdomainId: ${subdomainId}`);
+    // setSelectedSubdomainId(subdomainId);
+    filterEvents('subdomain', subdomainId);
   };
 
   const onOwnerChange = (owners) => {
@@ -60,9 +131,6 @@ export const EventDialog = ({
       createdAt: moment(),
       updatedAt: moment(),
     };
-
-    // TODO: delete this
-    console.log(`newEvent: ${JSON.stringify(newEvent)}`);
 
     addEvent(newEvent);
     handleClose();
